@@ -3,14 +3,14 @@ import argparse
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="YOLO trainer")
-    parser.add_argument("--config", type=str, required=True, help="The dataset config file")
+    parser.add_argument("--config", type=str, default="config.yaml", help="The dataset config file")
     parser.add_argument("--init_model", type=str, default="yolo11n.pt", help="The pre-trained model weights")
 
-    parser.add_argument("--name", type=str, required=True, help="Save dir")
-    parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs")
+    parser.add_argument("--name", type=str, default="yolo", help="Save dir")
+    parser.add_argument("--epochs", type=int, default=20, help="Number of training epochs")
     parser.add_argument("--device", type=int, default=0, help="Device training index")
 
-    parser.add_argument("--export_format", type=str, default="onnx", help="format to export the model as, eg onnx,imx")
+    parser.add_argument("--export_format", type=str, default="onnx", help="format to export the model as, eg onnx, imx")
     parser.add_argument("--export_config", type=str, default=None, help="The dataset config file for export")
     parser.add_argument("--resume_training",  action='store_true', help="Resume training of a model")
     parser.add_argument("--export_only",  action='store_true', help="Just export the weights as onnx")

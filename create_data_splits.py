@@ -9,7 +9,7 @@ def main():
         description='Create text files indicating the train/test/val splits.')
 
     # Input directory argument
-    parser.add_argument('--input_dir', type=str, help='Base directory to load images')
+    parser.add_argument('--data_dir', type=str, help='Base directory to load images')
 
     parser.add_argument('--test_split', type=float, help='Percentage of images to split into the test set',
                         default=0.2)
@@ -20,7 +20,7 @@ def main():
     # Parse arguments
     args = parser.parse_args()
 
-    img_input_root_dir = os.path.join(args.input_dir, "images")
+    img_input_root_dir = os.path.join(args.data_dir, "images")
 
     all_img_paths = []
     for root, _, files in os.walk(img_input_root_dir):
@@ -38,12 +38,12 @@ def main():
     total_images = len(all_img_paths)
     test_num = int(args.test_split * total_images)
 
-    test_filepath = os.path.join(args.input_dir, f"test{file_suffix}.txt")
+    test_filepath = os.path.join(args.data_dir, f"test{file_suffix}.txt")
 
     val_num = int(args.val_split * total_images)
-    val_filepath = os.path.join(args.input_dir, f"val{file_suffix}.txt")
+    val_filepath = os.path.join(args.data_dir, f"val{file_suffix}.txt")
 
-    train_filepath = os.path.join(args.input_dir, f"train{file_suffix}.txt")
+    train_filepath = os.path.join(args.data_dir, f"train{file_suffix}.txt")
 
     test_images = [all_img_paths.pop() for _ in range(test_num)]
     val_images = [all_img_paths.pop() for _ in range(val_num)]
@@ -65,13 +65,13 @@ def main():
 
 
     # Create data config yaml
-    class_dict_filepath = os.path.join(args.input_dir, "classes.json")
+    class_dict_filepath = os.path.join(args.data_dir, "classes.json")
     with open(class_dict_filepath) as f:
         d = json.load(f)
 
-    base_dir = args.input_dir.split("/")[-1]
+    base_dir = args.data_dir.split("/")[-1]
     if base_dir == '':
-        base_dir = args.input_dir.split("/")[-2]
+        base_dir = args.data_dir.split("/")[-2]
     yaml_filename = base_dir + f"{file_suffix}_config.yaml"
 
     with open(yaml_filename, 'w') as f:
