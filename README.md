@@ -8,7 +8,9 @@ Training and deploying YOLO object detection models on Raspberry Pi AI Camera or
 You'll need to create an account and install the Hailo Dataflow Compiler and HailoRT (python whl AND .deb if using Ubuntu) <br>
 https://hailo.ai/developer-zone/software-downloads/ <br>
 git clone and run setup script for hailo model zoo (i've had issues with installing from hailo.ai) <br>
-https://github.com/hailo-ai/hailo_model_zoo/
+https://github.com/hailo-ai/hailo_model_zoo/<br>
+Though I highly recommend using their docker container instead <br>
+https://hailo.ai/developer-zone/documentation/hailo-sw-suite-2025-01/?sp_referrer=suite/suite_install.html#docker-installation
 ### On the RasPi 5
 Install raspi Hailo software
 ```
