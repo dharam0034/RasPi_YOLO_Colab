@@ -37,7 +37,7 @@ I have not yet tested this for other model types (aka YOLO11) #TODO
 ### On the RasPi
 Install the RasPi IMX tools
 ```
-sudo apt install imx500-tools
+sudo apt install imx500-all imx500-tools
 ```
 
 ## Demos
@@ -90,7 +90,7 @@ Train a new model:
 ```
 python yolo_train.py \
     --config /path/to/dataset_config.yaml \
-    --init_model yolo8n.pt \
+    --init_model yolov8n.pt \
     --name my_model \
     --epochs 20 \
     --device 0
