@@ -10,7 +10,7 @@ from picamera2 import MappedArray, Picamera2, Preview
 from picamera2.devices import Hailo
 
 
-def extract_detections(hailo_output, w, h, class_names, threshold=0.5, w_split, h_split):
+def extract_detections(hailo_output, w, h, class_names, threshold, w_split, h_split):
     """Extract detections from the HailoRT-postprocess output."""
     results = []
     for class_id, detections in enumerate(hailo_output):
