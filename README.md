@@ -37,9 +37,9 @@ And convert/export your model as seen here <br>
 https://github.com/sony/model_optimization/blob/main/tutorials/notebooks/mct_features_notebooks/pytorch/example_pytorch_post_training_quantization.ipynb <br>
 I have not yet tested this for other model types (aka YOLO11) #TODO
 ### On the RasPi
-Install the RasPi IMX tools
+Install the RasPi IMX tools (you only need to run imx500-all)
 ```
-sudo apt install imx500-all imx500-tools
+sudo apt install imx500-all
 ```
 
 ## Demos
@@ -156,7 +156,7 @@ python imx500_object_detection_demo.py --model <path to network.rpk> --labels <p
 You'll need to perform the conversion, make sure you have run `hailo_calibration_data.py` to create the calib data (`--calib-path`). <br>
 Once the YOLO model has finished training (in previous step) the best model will be exported to the ONNX format with default params, 
 Use this file to compile `--ckpt`. 
-Point `--yaml` to the network config yaml in the hail_model_zoo repo, aka `hailo_model_zoo/hailo_model_zoo/cfg/networks/yolo8n.yaml`.  <br>
+Point `--yaml` to the network config yaml in the hail_model_zoo repo, aka `hailo_model_zoo/hailo_model_zoo/cfg/networks/yolov8n.yaml`.  <br>
 Set the number of classes for your model (`--classes`). <br>
 Set the `--hw-arch` to your Hailo accelerator type, Hailo 8 (26 TOPS): `hailo8` or Hailo 8L (13 TOPS) `hailo8l`
 ```
