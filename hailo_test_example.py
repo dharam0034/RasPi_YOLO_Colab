@@ -85,7 +85,7 @@ if __name__ == "__main__":
             config = picam2.create_preview_configuration(main, lores=lores, controls=controls)
             picam2.configure(config)
 
-            picam2.start_preview(Preview.QTGL, x=0, y=0, width=video_w, height=video_h)
+            picam2.start_preview(Preview.QT, x=0, y=0, width=video_w, height=video_h)
             picam2.start()
             picam2.pre_callback = draw_objects
 
