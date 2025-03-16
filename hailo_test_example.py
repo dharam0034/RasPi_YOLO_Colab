@@ -10,7 +10,7 @@ from picamera2 import MappedArray, Picamera2, Preview
 from picamera2.devices import Hailo
 
 
-def extract_detections(hailo_output, w, h, class_names, threshold, w_split, h_split):
+def extract_detections(hailo_output, w, h, class_names, threshold, crop_ratio):
     """Extract detections from the HailoRT-postprocess output."""
     results = []
     for class_id, detections in enumerate(hailo_output):
@@ -18,7 +18,9 @@ def extract_detections(hailo_output, w, h, class_names, threshold, w_split, h_sp
             score = detection[4]
             if score >= threshold:
                 y0, x0, y1, x1 = detection[:4]
-                bbox = (int(x0 * w) + w_split, int(y0 * h) + h_split, int(x1 * w), int(y1 * h))
+                x0_crop = (crop_ratio * (x0 - 1) + 1)
+
+                bbox = (int(x0_crop * w), int(y0 * h), int(x1 * w), int(y1 * h))
                 results.append([class_names[class_id], bbox, score])
     return results
 
@@ -39,8 +41,6 @@ def crop_to_size(image):
     # Crop the image to be square
     h, w, _ = image.shape
 
-    w_split = 0
-    h_split = 0
     if not h == w:
         if w > h:
             w_split = (w - h)//2
@@ -48,7 +48,7 @@ def crop_to_size(image):
         else:
             h_split = (h - w)//2
             image = np.ascontiguousarray(image[:, :, h_split:h_split+w])
-    return image, w_split, h_split
+    return image
 
 if __name__ == "__main__":
     # Parse command-line arguments.
@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # Get the Hailo model, the input size it wants, and the size of our preview stream.
     with Hailo(args.model) as hailo:
-        model_h, model_w, _ = hailo.get_input_shape()
+        h_split, model_w, _ = hailo.get_input_shape()
         video_w, video_h = 1280, 960
 
         # Load class names from the labels file
@@ -80,6 +80,7 @@ if __name__ == "__main__":
             # Keep the aspect ratio of the main feed
             lores_w = int(round(model_w * (video_w / video_h)))
             lores = {'size': (lores_w, model_h), 'format': 'RGB888'}
+            crop_ratio = model_w/lores_w
 
             controls = {'FrameRate': 30}
             config = picam2.create_preview_configuration(main, lores=lores, controls=controls)
@@ -92,11 +93,11 @@ if __name__ == "__main__":
             # Process each low resolution camera frame.
             while True:
                 frame = picam2.capture_array('lores')
-                cropped_frame, w_split, h_split = crop_to_size(frame)
+                cropped_frame = crop_to_size(frame)
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
 
                 # Extract detections from the inference results
                 detections = extract_detections(results, video_w, video_h, class_names,
-                                                args.score_thresh, w_split, h_split)
+                                                args.score_thresh, crop_ratio)
