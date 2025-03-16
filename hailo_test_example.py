@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # Get the Hailo model, the input size it wants, and the size of our preview stream.
     with Hailo(args.model) as hailo:
-        h_split, model_w, _ = hailo.get_input_shape()
+        model_h, model_w, _ = hailo.get_input_shape()
         video_w, video_h = 1280, 960
 
         # Load class names from the labels file
