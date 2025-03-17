@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
             # Keep the aspect ratio of the main feed
             lores_w = int(round(model_w * (video_w / video_h)))
-            lores = {'size': (lores_w, model_h), 'format': 'RGB888'}
+            lores = {'size': (lores_w, model_h), 'format': 'BGR888'}
             crop_ratio = model_w/lores_w
 
             controls = {'FrameRate': 30}
@@ -99,7 +99,7 @@ if __name__ == "__main__":
             while True:
                 frame = picam2.capture_array('lores')
                 cropped_frame = crop_to_square(frame)
-                cropped_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_RGB2BGR)
+                # cropped_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_RGB2BGR)
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
