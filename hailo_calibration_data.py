@@ -52,7 +52,7 @@ def main():
     args = parse_arguments()
 
     # Ensure target directory exists
-    target_dir_path = args.target_dir
+    target_dir_path = os.path.join(args.target_dir, "calib")
     os.makedirs(target_dir_path, exist_ok=True)
 
     # Find all image files in the data directory
