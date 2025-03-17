@@ -99,7 +99,7 @@ if __name__ == "__main__":
             while True:
                 frame = picam2.capture_array('lores')
                 cropped_frame = crop_to_square(frame)
-                cropped_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2RGB)
+                cropped_frame = cv2.cvtColor(cropped_frame, cv2.COLOR_RGB2BGR)
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
