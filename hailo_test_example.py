@@ -42,7 +42,7 @@ def draw_objects(request):
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0, 0), 1, cv2.LINE_AA)
 
 
-def crop_to_size(image):
+def crop_to_square(image):
     # Crop the image to be square
     h, w, _ = image.shape
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
             # Process each low resolution camera frame.
             while True:
                 frame = picam2.capture_array('lores')
-                cropped_frame = crop_to_size(frame)
+                cropped_frame = crop_to_square(frame)
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
