@@ -98,8 +98,9 @@ if __name__ == "__main__":
             # Process each low resolution camera frame.
             while True:
                 frame = picam2.capture_array('lores')
+                frame = frame[::-1, :, :]
+
                 cropped_frame = crop_to_square(frame)
-                cropped_frame = cropped_frame[::-1, :, :]
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
