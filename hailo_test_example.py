@@ -99,6 +99,7 @@ if __name__ == "__main__":
             while True:
                 frame = picam2.capture_array('lores')
                 cropped_frame = crop_to_square(frame)
+                cropped_frame = cropped_frame[::-1, :, :]
 
                 # Run inference on the preprocessed frame
                 results = hailo.run(cropped_frame)
