@@ -28,8 +28,10 @@ def extract_detections(hailo_output, w, h, class_names, threshold, crop_ratio):
 
 def draw_objects(request):
     current_detections = detections
-    if current_detections:
-        with MappedArray(request, "main") as m:
+    with MappedArray(request, "main") as m:
+        x_start = (video_w - video_h)//2
+        cv2.rectangle(m.array, (x_start, 0), (x_start + video_h, video_h), (255, 0, 0, 0), 4)
+        if current_detections:
             for class_name, bbox, score in current_detections:
                 x0, y0, x1, y1 = bbox
                 label = f"{class_name} %{int(score * 100)}"
