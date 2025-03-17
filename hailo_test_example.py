@@ -30,7 +30,9 @@ def draw_objects(request):
     current_detections = detections
     with MappedArray(request, "main") as m:
         x_start = (video_w - video_h)//2
-        cv2.rectangle(m.array, (x_start, 0), (x_start + video_h, video_h), (255, 0, 0, 0), 4)
+        cv2.rectangle(m.array, (x_start, 0), (x_start + video_h, video_h), (0, 0, 255, 0), 4)
+        cv2.putText(m.array, "Model View!", (x_start + 5, 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255, 0), 1, cv2.LINE_AA)
         if current_detections:
             for class_name, bbox, score in current_detections:
                 x0, y0, x1, y1 = bbox
