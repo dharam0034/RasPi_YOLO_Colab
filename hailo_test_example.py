@@ -19,8 +19,9 @@ def extract_detections(hailo_output, w, h, class_names, threshold, crop_ratio):
             if score >= threshold:
                 y0, x0, y1, x1 = detection[:4]
                 x0_crop = (crop_ratio * (x0 - 1) + 1)
+                x1_crop = (crop_ratio * (x1 - 1) + 1)
 
-                bbox = (int(x0_crop * w), int(y0 * h), int(x1 * w), int(y1 * h))
+                bbox = (int(x0_crop * w), int(y0 * h), int(x1_crop * w), int(y1 * h))
                 results.append([class_names[class_id], bbox, score])
     return results
 
