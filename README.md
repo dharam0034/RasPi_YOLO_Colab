@@ -134,7 +134,7 @@ Generate calibration data for Hailo converter:
 python hailo_calibration_data.py \
     --data_dir /path/to/data_directory \
     --target_dir calib \
-    --image_size 640 \
+    --image_size 640, 640 \
     --num_images 1024
 ```
 
