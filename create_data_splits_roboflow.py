@@ -88,7 +88,7 @@ def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, se
 
 
     # Define paths
-    for split in ['train' 'valid', 'test']:
+    for split in ['train', 'valid', 'test']:
         image_dir = os.path.join(data_dir, split, 'images')
         label_dir = os.path.join(data_dir, split, 'labels')
         image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
