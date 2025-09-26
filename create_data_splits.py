@@ -12,9 +12,9 @@ def main():
     parser.add_argument('--data_dir', type=str, help='Base directory to load images')
 
     parser.add_argument('--test_split', type=float, help='Percentage of images to split into the test set',
-                        default=0.2)
+                        default=0)
     parser.add_argument('--val_split', type=float, help='Percentage of images to split into the val set',
-                        default=0.1)
+                        default=0)
     parser.add_argument('--num_classes', type=int, help='Specify the number of classes if classes json does not exist',
                         default=1)
     parser.add_argument("--onnx_config",  action='store_true', help="Create a Split and Config for onnx export")
