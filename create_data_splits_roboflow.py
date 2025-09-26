@@ -68,7 +68,7 @@ def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, ra
     test_files = image_files[train_size + valid_size:]
 
     # Function to copy files to destination
-    def copy_files(file_list, split):
+    def move_files(file_list, split):
         for file_name in file_list:
             # Move image
             src_image = os.path.join(image_dir, file_name)
@@ -85,8 +85,10 @@ def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, ra
                 print(f"Warning: Label file {label_name} not found for image {file_name}")
 
     # Copy files to respective directories
-    copy_files(valid_files, 'valid')
-    copy_files(test_files, 'test')
+    move_files(valid_files, 'valid')
+    move_files(test_files, 'test')
+    
+    print(f" Split is successful!!")
 
 
     # Define paths
