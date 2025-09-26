@@ -37,7 +37,7 @@ def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, ra
         seed (int): Random seed for reproducibility.
     """
     # Set random seed for reproducibility
-    random.seed(seed)
+    random.seed(random_seed)
 
     # Define paths
     image_dir = os.path.join(data_dir, 'train', 'images')
