@@ -25,7 +25,7 @@ def main():
     shuffle_and_split_dataset(args.data_dir, args.train_split, args.val_split, args.test_split, seed=40)
 
 
-def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio=0.3, seed=40):
+def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, seed=40):
     """
     Args:
         data_dir (str): Path to the original dataset directory with images and labels in train subfolder.
@@ -86,10 +86,14 @@ def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio=0.3
     copy_files(valid_files, 'valid')
     copy_files(test_files, 'test')
 
-    print(f"Dataset shuffled and split successfully:")
-    print(f"Train: {len(train_files)} images")
-    print(f"Valid: {len(valid_files)} images")
-    print(f"Test: {len(test_files)} images")
+
+    # Define paths
+    for split in ['train' 'valid', 'test']:
+        image_dir = os.path.join(data_dir, split, 'images')
+        label_dir = os.path.join(data_dir, split, 'labels')
+        image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
+        label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
+        print(f"{split}: {image_count} images, {label_count} labels")
 
 if __name__ == "__main__":
     main()
