@@ -47,7 +47,7 @@ def main():
 
     # Export the model
     if args.export_format:
-        model.export(format=args.export_format, int8=args.int8_weights, imgsz=image_size, device=0, batch=16, nms=True,
+        model.export(format=args.export_format, int8=args.int8_weights, imgsz=image_size, device=0, nms=True,
                      data=args.export_config, opset=11, name=args.name, project=args.name)  # exports with PTQ quantization by default
 
 if __name__ == "__main__":
