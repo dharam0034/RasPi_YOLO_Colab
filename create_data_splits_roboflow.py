@@ -17,15 +17,17 @@ def main():
                         default=0.1)
     parser.add_argument('--test_split', type=float, help='Percentage of images to split into the test set',
                         default=0.3)
+    parser.add_argument('--random_seed', type=int, help='Random seed to ensure it generates same set of random numbers to ensure model consistency',
+                        default=42)
 
 
     # Parse arguments
     args = parser.parse_args()
     
-    shuffle_and_split_dataset(args.data_dir, args.train_split, args.val_split, args.test_split, seed=40)
+    shuffle_and_split_dataset(args.data_dir, args.train_split, args.val_split, args.test_split, args.random_seed)
 
 
-def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, seed=40):
+def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio, random_seed):
     """
     Args:
         data_dir (str): Path to the original dataset directory with images and labels in train subfolder.
