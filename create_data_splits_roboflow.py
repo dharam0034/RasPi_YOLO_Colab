@@ -1,106 +1,96 @@
 import argparse
 import os
 import random
-import json
+import shutil
 
 def main():
     # Create argument parser
     parser = argparse.ArgumentParser(
-        description='Create text files indicating the train/test/val splits.')
+        description='Shuffles a YOLO dataset where all images and labels are in the train folder, and splits them into valid, and test sets.')
 
     # Input directory argument
     parser.add_argument('--data_dir', type=str, help='Base directory to load images')
 
-    parser.add_argument('--test_split', type=float, help='Percentage of images to split into the test set',
-                        default=0.2)
+    parser.add_argument('--train_split', type=float, help='Percentage of images to split into the test set',
+                        default=0.6)
     parser.add_argument('--val_split', type=float, help='Percentage of images to split into the val set',
                         default=0.1)
-    parser.add_argument('--num_classes', type=int, help='Specify the number of classes if classes json does not exist',
-                        default=1)
-    parser.add_argument("--onnx_config",  action='store_true', help="Create a Split and Config for onnx export")
+    parser.add_argument('--test_split', type=float, help='Percentage of images to split into the test set',
+                        default=0.3)
+
 
     # Parse arguments
     args = parser.parse_args()
-
-    img_input_root_dir = os.path.join(args.data_dir, "images")
-
-    all_img_paths = []
-    for root, _, files in os.walk(img_input_root_dir):
-        if len(files) == 0:
-            continue
-
-        for file in files:
-            file_path = os.path.join(root, file)
-            relative_path = file_path.replace(img_input_root_dir, "./images")
-            all_img_paths.append(relative_path + '\n')
-
-    random.shuffle(all_img_paths)
-    file_suffix = "_onnx" if args.onnx_config else ""
-
-    total_images = len(all_img_paths)
-    test_num = int(args.test_split * total_images)
-
-    test_filepath = os.path.join(args.data_dir, f"test{file_suffix}.txt")
-
-    val_num = int(args.val_split * total_images)
-    val_filepath = os.path.join(args.data_dir, f"val{file_suffix}.txt")
-
-    train_filepath = os.path.join(args.data_dir, f"train{file_suffix}.txt")
-
-    test_images = [all_img_paths.pop() for _ in range(test_num)]
-    val_images = [all_img_paths.pop() for _ in range(val_num)]
-
-    # If it's for ONNX calibration export only use 300 examples
-    if args.onnx_config:
-        test_images = test_images[:300]
-        val_images = val_images[:300]
-        all_img_paths = all_img_paths[:300]
-
-    with open(test_filepath, 'w') as f:
-        f.writelines(test_images)
-
-    with open(val_filepath, 'w') as f:
-        f.writelines(val_images)
-
-    with open(train_filepath, 'w') as f:
-        f.writelines(all_img_paths)
+    
+    shuffle_and_split_dataset(args.data_dir, args.train_split, args.val_split, args.test_split, seed=40)
 
 
-    # Create data config yaml
-    try:
-        class_dict_filepath = os.path.join(args.data_dir, "classes.json")
-        with open(class_dict_filepath) as f:
-            d = json.load(f)
-            num_classes = len(list(d.keys()))
-    except Exception as e:
-        print(f"No classes.json file found at {args.data_dir}, please define! (see example)")
-        print(e)
-        return
+def shuffle_and_split_dataset(data_dir, train_ratio, valid_ratio, test_ratio=0.3, seed=40):
+    """
+    Args:
+        data_dir (str): Path to the original dataset directory with images and labels in train subfolder.
+        train_ratio (float): Proportion of data for training.
+        valid_ratio (float): Proportion of data for validation.
+        test_ratio (float): Proportion of data for testing.
+        seed (int): Random seed for reproducibility.
+    """
+    # Set random seed for reproducibility
+    random.seed(seed)
 
-    base_dir = args.data_dir.split("/")[-1]
-    if base_dir == '':
-        base_dir = args.data_dir.split("/")[-2]
-    yaml_filename = f"configs/{base_dir}{file_suffix}_config.yaml"
+    # Define paths
+    image_dir = os.path.join(data_dir, 'train', 'images')
+    label_dir = os.path.join(data_dir, 'train', 'labels')
 
-    with open(yaml_filename, 'w') as f:
-        f.write(f"# Train images\n")
-        f.write(f"train: {train_filepath}\n")
-        f.write(f"\n")
+    # Validate input directories
+    if not (os.path.exists(image_dir) and os.path.exists(label_dir)):
+        raise FileNotFoundError("Train images or labels directory not found!")
 
-        f.write(f"# Validation images\n")
-        f.write(f"val: {val_filepath}\n")
-        f.write(f"\n")
+    # Create output directories
+    for split in ['valid', 'test']:
+         os.makedirs(os.path.join(data_dir, split, 'images'), exist_ok=True)
+         os.makedirs(os.path.join(data_dir, split, 'labels'), exist_ok=True)
 
-        f.write(f"# Test images\n")
-        f.write(f"test: {test_filepath}\n")
-        f.write(f"\n")
+    # Get list of image files
+    image_files = [f for f in os.listdir(image_dir) if f.endswith(('.jpg', '.png', '.jpeg'))]
 
-        f.write(f"# Number of classes\n")
-        f.write(f"nc: {str(num_classes)}\n")
-        f.write(f"\n")
+    # Shuffle the image files
+    random.shuffle(image_files)
 
-        f.write(f"# Class names\n")
-        f.write(f"names: {list(d.keys())}\n")
+    # Split dataset
+    total_images = len(image_files)
+    train_size = int(train_ratio * total_images)
+    valid_size = int(valid_ratio * total_images)
+
+    train_files = image_files[:train_size]
+    valid_files = image_files[train_size:train_size + valid_size]
+    test_files = image_files[train_size + valid_size:]
+
+    # Function to copy files to destination
+    def copy_files(file_list, split):
+        for file_name in file_list:
+            # Move image
+            src_image = os.path.join(image_dir, file_name)
+            dst_image = os.path.join(data_dir, split, 'images', file_name)
+            shutil.move(src_image, dst_image)
+
+            # Move corresponding label
+            label_name = os.path.splitext(file_name)[0] + '.txt'
+            src_label = os.path.join(label_dir, label_name)
+            dst_label = os.path.join(data_dir, split, 'labels', label_name)
+            if os.path.exists(src_label):
+                shutil.move(src_label, dst_label)
+            else:
+                print(f"Warning: Label file {label_name} not found for image {file_name}")
+
+    # Copy files to respective directories
+    copy_files(valid_files, 'valid')
+    copy_files(test_files, 'test')
+
+    print(f"Dataset shuffled and split successfully:")
+    print(f"Train: {len(train_files)} images")
+    print(f"Valid: {len(valid_files)} images")
+    print(f"Test: {len(test_files)} images")
 
 if __name__ == "__main__":
     main()
+    
