@@ -22,7 +22,9 @@ def main():
     
     # List of source folders
     source_folders = [test_folder, valid_folder]
-
+    
+    print(f"Original dataset has ... ")
+    
     # Define paths
     for split in ['train', 'valid', 'test']:
         image_dir = os.path.join(args.data_dir, split, 'images')
@@ -31,7 +33,8 @@ def main():
         label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
         print(f"{split}: {image_count} images, {label_count} labels")
 
-    
+    print(f"After mivong the test and valid set into the train set .. ")
+
     # Move files from test and valid to train
     move_files(source_folders, train_folder)
     
@@ -88,11 +91,11 @@ def move_files(source_folders, dest_folder, file_types=('*.jpg', '*.jpeg', '*.pn
             
             # Move image
             shutil.move(str(img_path), dest_images / img_path.name)
-            print(f"Moved image: {img_path.name}")
+            #print(f"Moved image: {img_path.name}")
             
             # Move label
             shutil.move(str(label_path), dest_labels / label_path.name)
-            print(f"Moved label: {label_path.name}")
+            #print(f"Moved label: {label_path.name}")
             
         print(f"Completed moving files from {source_folder}")
 
