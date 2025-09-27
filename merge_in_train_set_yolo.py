@@ -81,8 +81,8 @@ def move_files(source_folders, dest_folder, file_types=('*.jpg', '*.jpeg', '*.pn
 
         # Define paths
         for split in ['train', 'valid', 'test']:
-            image_dir = os.path.join(data_dir, split, 'images')
-            label_dir = os.path.join(data_dir, split, 'labels')
+            image_dir = os.path.join(args.data_dir, split, 'images')
+            label_dir = os.path.join(args.data_dir, split, 'labels')
             image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
             label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
             print(f"{split}: {image_count} images, {label_count} labels")
