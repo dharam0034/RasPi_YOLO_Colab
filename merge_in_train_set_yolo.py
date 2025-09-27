@@ -1,7 +1,7 @@
 import argparse
 import os
-import random
 import shutil
+from pathlib import Path
 
 def main():
     # Create argument parser
