@@ -56,7 +56,7 @@ def move_files(source_folders, dest_folder, file_types=('*.jpg', '*.jpeg', '*.pn
         # Get all image files
         image_files = []
         for ext in file_types:
-            image_files.extend(source_images.glob(ext))   ////////////////////////////
+            image_files.extend(source_images.glob(ext))   ##########################
         
         # Move each image and its corresponding label
         for img_path in image_files:
