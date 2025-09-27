@@ -22,9 +22,26 @@ def main():
     
     # List of source folders
     source_folders = [test_folder, valid_folder]
+
+    # Define paths
+    for split in ['train', 'valid', 'test']:
+        image_dir = os.path.join(args.data_dir, split, 'images')
+        label_dir = os.path.join(args.data_dir, split, 'labels')
+        image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
+        label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
+        print(f"{split}: {image_count} images, {label_count} labels")
+
     
     # Move files from test and valid to train
     move_files(source_folders, train_folder)
+    
+    # Define paths
+    for split in ['train', 'valid', 'test']:
+        image_dir = os.path.join(args.data_dir, split, 'images')
+        label_dir = os.path.join(args.data_dir, split, 'labels')
+        image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
+        label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
+        print(f"{split}: {image_count} images, {label_count} labels")
 
 def move_files(source_folders, dest_folder, file_types=('*.jpg', '*.jpeg', '*.png')):
     """
@@ -79,13 +96,6 @@ def move_files(source_folders, dest_folder, file_types=('*.jpg', '*.jpeg', '*.pn
             
         print(f"Completed moving files from {source_folder}")
 
-        # Define paths
-        for split in ['train', 'valid', 'test']:
-            image_dir = os.path.join(args.data_dir, split, 'images')
-            label_dir = os.path.join(args.data_dir, split, 'labels')
-            image_count = len([entry for entry in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir, entry))])
-            label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
-            print(f"{split}: {image_count} images, {label_count} labels")
 
 if __name__ == "__main__":
     main()
