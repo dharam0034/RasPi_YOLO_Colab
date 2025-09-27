@@ -33,7 +33,7 @@ def main():
         label_count = len([entry for entry in os.listdir(label_dir) if os.path.isfile(os.path.join(label_dir, entry))])
         print(f"{split}: {image_count} images, {label_count} labels")
 
-    print(f"After mivong the test and valid set into the train set .. ")
+    print(f"After mivong the test and valid sets into the train set .. ")
 
     # Move files from test and valid to train
     move_files(source_folders, train_folder)
